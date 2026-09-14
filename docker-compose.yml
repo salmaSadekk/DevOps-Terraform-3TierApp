@@ -1,0 +1,45 @@
+# Local dev / manual testing only. Not used by Terraform/Ansible in the
+# real AWS deployment, but the fastest way to run the whole 3-tier stack
+# on your laptop before you touch AWS at all.
+#
+# Usage:
+#   docker compose up --build
+#   curl http://localhost:5000/health
+#   curl http://localhost:5000/api/items
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: appdb
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: apppassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: appdb
+      DB_USER: appuser
+      DB_PASSWORD: apppassword
+      PORT: 5000
+    ports:
+      - "5000:5000"
+
+volumes:
+  db_data:

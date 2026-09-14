@@ -1,0 +1,2 @@
+# terraform-vpc-creation
+In this article, we explore the seamless integration of Terraform with AWS. Specifically, we delve into the intricacies of creating a VPC with both public and private subnets. Throughout the discussion, we leverage various variables, and employ parent and child modules to enhance our comprehension of Terraform.

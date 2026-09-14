@@ -1,0 +1,26 @@
+# Example systemd unit for the backend app tier. Your Ansible role should
+# template this file (e.g. with Jinja2 variables for paths/user) and drop
+# it at /etc/systemd/system/app.service, then:
+#   systemctl daemon-reload
+#   systemctl enable --now app
+#
+# Environment values below should come from Ansible variables / an
+# EnvironmentFile populated from AWS Secrets Manager or SSM Parameter
+# Store, not committed to Git.
+
+[Unit]
+Description=Demo 3-tier REST API
+After=network.target
+
+[Service]
+Type=simple
+User=appuser
+Group=appuser
+WorkingDirectory=/opt/app
+EnvironmentFile=/etc/app/app.env
+ExecStart=/opt/app/venv/bin/gunicorn --bind 0.0.0.0:5000 --workers 3 wsgi:app
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
