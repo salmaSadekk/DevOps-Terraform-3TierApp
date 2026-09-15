@@ -42,7 +42,13 @@ variable "vpc" {
 }
 
 
-variable "asg_sg" {
+variable "alb_security_group_id" {
   description = "SG"
+  type        = string
+}
+
+
+variable "targetgroup_alb_arn" {
+  description = "ALB_arn"
   type        = string
 }

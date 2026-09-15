@@ -9,6 +9,10 @@ resource "aws_autoscaling_group" "terraform_asg" {
     version = "$Latest"  # Use the latest version of the launch template when launching instances
   }
 
+  target_group_arns = [
+  var.targetgroup_alb_arn
+]
+
 }
 
 
@@ -20,8 +24,9 @@ resource "aws_launch_template" "launch-asg" {
 
 
   vpc_security_group_ids = [
-    var.asg_sg.id
+    aws_security_group.asg_sg.id
   ]
+
 
 
   tag_specifications {
@@ -32,4 +37,24 @@ resource "aws_launch_template" "launch-asg" {
   } 
   
   }
+
+  resource "aws_security_group" "asg_sg" {
+  name        = "ASG-security-group"
+  description = "Allow traffic for ASG"
+  
+   ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [var.alb_security_group_id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+   vpc_id      = var.vpc
+}
 

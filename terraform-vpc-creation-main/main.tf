@@ -20,6 +20,15 @@ module "ec2" {
 */
 
 
+module "loadbalancer" {
+  source = "./modules/loadbalancer"
+  vpc = module.vpc.my_vpc
+  subnet_ids  = var.public_subnet
+
+
+
+}
+
 module "asg" {
   source = "./modules/asg"
 
@@ -31,6 +40,8 @@ module "asg" {
    max_size = 3
    desired_capacity =1 
    vpc = module.vpc.my_vpc
+   alb_security_group_id = module.loadbalancer.securityGroup
+   targetgroup_alb_arn = module.loadbalancer.target_group_arn
 
 
 }
