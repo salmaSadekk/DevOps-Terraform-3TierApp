@@ -8,3 +8,11 @@ variable "subnet_ids" {
   type = list(string)
 }
 
+variable "demotarget_name" {
+  description = "name of target group"
+  type = string
+}
+
+variable SG {}
+
+variable name {}

@@ -42,7 +42,7 @@ variable "vpc" {
 }
 
 
-variable "alb_security_group_id" {
+variable "SG" {
   description = "SG"
   type        = string
 }
@@ -51,4 +51,16 @@ variable "alb_security_group_id" {
 variable "targetgroup_alb_arn" {
   description = "ALB_arn"
   type        = string
+  default = "none"
+}
+
+
+
+variable "name" {
+  type = string
+
+}
+
+variable "security_group_name"{
+  type= string
 }

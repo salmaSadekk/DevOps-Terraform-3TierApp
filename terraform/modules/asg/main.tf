@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "terraform_asg" {
-  name               = "my-terraform-asg"  # This is the name of the ASG that will be created in AWS
+  name               = var.name  # This is the name of the ASG that will be created in AWS
   min_size           = var.min_size  # Reference the variable 'min_size' to define the lower bound of the ASG size
   max_size           = var.max_size  # Reference the variable 'max_size' to define the upper bound of the ASG size
   desired_capacity   = var.desired_capacity  # Reference the variable 'desired_capacity' to set the number of instances at the start
@@ -18,7 +18,7 @@ resource "aws_autoscaling_group" "terraform_asg" {
 
 
 resource "aws_launch_template" "launch-asg" {
-  name          = "my-launch-asg"
+  name          = var.security_group_name
   image_id      = var.ami_id
   instance_type = var.instance_type
 
@@ -39,14 +39,14 @@ resource "aws_launch_template" "launch-asg" {
   }
 
   resource "aws_security_group" "asg_sg" {
-  name        = "ASG-security-group"
+  name        = var.security_group_name
   description = "Allow traffic for ASG"
   
    ingress {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [var.alb_security_group_id]
+    security_groups = [var.SG]
   }
 
   egress {
@@ -56,5 +56,10 @@ resource "aws_launch_template" "launch-asg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
    vpc_id      = var.vpc
+
+  tags = {
+    Name = var.security_group_name
+  }
+
 }
 

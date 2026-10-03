@@ -1,21 +1,21 @@
 resource "aws_lb" "demo-alb" {
-    name = "demo-alb"
+    name = var.name
     internal = "false"
     load_balancer_type = "application"
-    security_groups = [aws_security_group.lb_sg.id]
+    security_groups = [var.SG]
     subnets = var.subnet_ids
 }
 
 resource "aws_lb_target_group" "demo-target" {
-    name = "demo-tg"
+    name = var.demotarget_name
     port = 80
     protocol = "HTTP"
     vpc_id = var.vpc
-    health_check {
+   /* health_check {
       path = "/health"
       port = 80
       protocol = "HTTP"
-    }
+    } */
 }
 
 
@@ -32,6 +32,7 @@ resource "aws_lb_listener" "listener" {
 }
 
 
+/* 
 resource "aws_security_group" "lb_sg" {
   name        = "lb-security-group"
   description = "Allow traffic for Load balancer"
@@ -58,4 +59,4 @@ resource "aws_security_group" "lb_sg" {
   }
 
    vpc_id      = var.vpc
-}
+} */
